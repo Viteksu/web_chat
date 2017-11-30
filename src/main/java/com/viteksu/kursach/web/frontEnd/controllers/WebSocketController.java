@@ -12,7 +12,7 @@ import java.io.IOException;
 public class WebSocketController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setStatus(HttpServletResponse.SC_SWITCHING_PROTOCOLS);
+        resp.setStatus(HttpServletResponse.SC_OK);
         req.getRequestDispatcher("/chat.jsp").forward(req, resp);
     }
 }

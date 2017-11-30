@@ -65,6 +65,10 @@ public class PropertyChecker implements Runnable {
 
             resourses = new Gson().fromJson(jsonElement, listType);
 
+            synchronized (this) {
+                this.notify();
+            }
+
             try {
                 Thread.sleep(30_000);
             } catch (InterruptedException e) {

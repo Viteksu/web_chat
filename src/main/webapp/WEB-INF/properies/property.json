@@ -4,7 +4,8 @@
     "/OOP/test",
     "/OOP/chat",
     "/OOP/signup",
-    "/OOP/signin"
+    "/OOP/signin",
+    "/OOP/chatMess"
   ],
   "maxUsers": 10
 }
