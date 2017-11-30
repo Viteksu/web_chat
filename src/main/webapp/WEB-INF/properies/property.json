@@ -1,0 +1,10 @@
+{
+  "resourses": [
+    "/OOP",
+    "/OOP/test",
+    "/OOP/chat",
+    "/OOP/signup",
+    "/OOP/signin"
+  ],
+  "maxUsers": 10
+}
