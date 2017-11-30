@@ -8,5 +8,7 @@ public class MyWebSocketConfigurator extends ServerEndpointConfig.Configurator {
     @Override
     public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
         return (T) new WebSocket(webSocketHandler);
+
+
     }
 }
