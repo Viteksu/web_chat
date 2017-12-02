@@ -4,6 +4,8 @@
     <meta charset="UTF-8"/>
     <title>Web Chat</title>
     <!--<script language="JavaScript" src="http://local.host:8080/OOP/script.js></script>-->
+
+
 	<script>
 	class Message {
 
@@ -36,9 +38,12 @@
    			this.message = result;
 
 		}
+
    	}
 
+	var set = new Set();
    	var name;
+
 	function init() {
 	ws = new WebSocket("ws://localhost:8080/OOP/chatMess");
 
@@ -71,25 +76,39 @@
 	});
 
     var $usersArea = document.getElementById("users");
-    var set = new Set();
+
+	 if (message.type == "ERR") {
+
+		 $textarea.value = $textarea.value + "ERROR \n";
+
+		return;
+    }
 
     if (message.type == "UPDATE_ADD") {
 		set.add(message.message);
-    	$usersArea.value = "";
 
-    	set.forEach( user => $usersArea.value = $usersArea.value + user);
+		$usersArea.value = message.message;
+
+
+		console.log(message);
 		return;
     }
 
     $textarea.value = $textarea.value + message.sender + ": " + message.message + "\n";
     }
 
+	ws.onerror = function (event) {
+		  var $usersArea = document.getElementById("users");
+		  $textarea.value = $textarea.value + "ERROR \nReson: " + event.code;
+	}
+
     ws.onclose = function (event) {}
 
 	};
 
+
     function sendMessage() {
-		var messageField = document.getElementById("message");
+		var messageField = document.getElementById("WebChatTextID");
         if (messageField.value.length == 0) {
 			return;
 		}
@@ -109,7 +128,7 @@
 </head>
 <body onload="init();">
 
-<div id="body">
+<!--<div id="body">
     <div id="menu">
         <p class="welcome">
             You signed in as <%= ((UserProfile) session.getAttribute("user")).getLogin()%>
@@ -129,7 +148,56 @@
             <input type="button" name="submitmsg" value="Send..." onclick="sendMessage();"/>
         </form>
     </form>
+</div> -->
+
+<div id="frame" class="frame-holder">
+
+
+<div id="usersBox" class="users-box">
+	<textarea class="html-users-box" id="users" rows="25" cols="25" readonly="readonly"></textarea>
 </div>
 
+<div id="html-chat">
+	<div class="holder-html-chat">
+
+		<div id="chatbox">
+			<textarea class="html-chat-history" id="messages" rows="20" cols="80" readonly="readonly"></textarea>
+		</div>
+
+		<div class="html-chat-js-name">
+			Hello <%= ((UserProfile) session.getAttribute("user")).getLogin()%>!
+		</div>
+
+
+		<textarea id="WebChatTextID" placeholder="Send message to the chat.." class="html-chat-js-input"></textarea>
+
+			<div class="html-chat-js-button-holder">
+
+
+				<input type="button" name="submitmsg" value="Send.." onclick="sendMessage();"/>
+					<div class="html-chat-js-answer">
+						<a href="https://github.com/Viteksu/web_chat" id="answer" target="__blank">Sourses link</a>
+					</div>
+				</input>
+			</div>
+	</div>
+</div>
+</div>
+
+<style>
+    /* Здесь настроим css стили для чата*/
+	.frame-holder{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 955px;}
+    .holder-html-chat{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 600px; }
+    .html-chat-history{ max-width: 600px; min-width: 200px; overflow: auto;max-height: 900px; min-height: 200px; border: 1px solid #ccc;padding: 5px;}
+    .html-chat-js-name{ margin-top:7px; }
+    .html-chat-js-input{ max-width: 600px; max-height: 100px; width: 600px; height: 45; margin-top:10px; min-width: 200px; min-height: 20px}
+    .html-chat-js-button-holder{ margin-bottom: 0px;margin-top: 10px; }
+    .html-chat-js-button-holder input{ width: 200px; }
+    .html-chat-js-answer{ float:right; }
+    .html-chat-js-answer a{ color: #777;font-size: 15px; font-family: cursive;}
+    .html-chat-msg{ margin: 0px; }
+	.users-box{position:fixed; top:20; left: 700; width:198px; border: 1px solid #ccc;padding:10px;background-color: #fff;}
+	.html-users-box{resize: none}
+    </style>
 </body>
 </html>

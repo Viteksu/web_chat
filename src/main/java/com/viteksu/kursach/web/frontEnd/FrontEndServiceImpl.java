@@ -51,9 +51,8 @@ public class FrontEndServiceImpl implements FrontEndService {
 
     public void setAuthenticated(UserProfile userProfile) {
 
-        if (userProfile != null) {
+        if (userProfile != null)
             authenticatedUsers.put(userProfile.getLogin(), userProfile);
-        }
 
         synchronized (authLock) {
             authLock.notifyAll();
