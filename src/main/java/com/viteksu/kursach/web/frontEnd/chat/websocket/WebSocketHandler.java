@@ -32,30 +32,46 @@ public class WebSocketHandler {
         String sender = "SERVER";
         String recipient = "ALL";
 
-        StringBuilder stringBuilder = new StringBuilder();
 
         for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
-            stringBuilder.append(entry.getValue()).append("\n");
+            String login = entry.getValue();
+
+
+            Message message = new Message(type, sender, recipient, login);
+            Gson gson = new Gson();
+
+            System.err.println("From: " + sender);
+            System.err.println("Mess:" + login);
+
+            String answerJson = gson.toJson(message);
+
+            sendToClient(answerJson, recipient, sender);
         }
 
 
-        Message message = new Message(type, sender, recipient, stringBuilder.toString());
-        Gson gson = new Gson();
+    }
 
-        System.err.println("From: " + sender);
-        System.err.println("Mess:" + stringBuilder.toString());
+    private void sendToClient(String jsonMess, String recipient, String sender) {
+        if (recipient.equals("ALL") || recipient.equals("ERR")) {
+            for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
+                try {
+                    entry.getKey().sendBack(jsonMess);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
+                if (entry.getValue().equals(recipient) || entry.getValue().equals(sender)) {
 
-        String answerJson = gson.toJson(message);
-
-
-        for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
-            try {
-                entry.getKey().sendBack(answerJson);
-            } catch (IOException e) {
-                e.printStackTrace();
+                    try {
+                        entry.getKey().sendBack(jsonMess);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
-
 
     }
 
@@ -87,28 +103,7 @@ public class WebSocketHandler {
         System.err.println("From: " + sender);
         System.err.println("Mess:" + message);
 
-        String answerMess = gson.toJson(mess);
-        if (recipient.equals("ALL")) {
-            for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
-                try {
-                    entry.getKey().sendBack(answerMess);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
-                if (entry.getValue().equals(recipient) || entry.getValue().equals(sender)) {
-
-                    try {
-                        entry.getKey().sendBack(answerMess);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        }
+        sendToClient(gson.toJson(mess), recipient, sender);
     }
 
     public static WebSocketHandler getInsance() {
