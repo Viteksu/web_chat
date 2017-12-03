@@ -42,7 +42,6 @@
 		}
 
 		var onlineUsers = new Set();
-		var chatingUsersOut = new Set();
 		var chatingUsersIn = new Set();
 		var name;
 
@@ -219,6 +218,7 @@
 
 
 	<div id="usersBox" class="users-box">
+		<h4><b>Online Users:</b><h4>
 		<textarea class="html-users-box" id="users" rows="25" cols="25" readonly="readonly"></textarea>
 	</div>
 
@@ -248,7 +248,7 @@
 			</div>
 
 
-			<textarea id="WebChatTextID" placeholder="Send message to the chat.." class="html-chat-js-input"></textarea>
+			<textarea id="WebChatTextID" placeholder="Type message for chating.." class="html-chat-js-input"></textarea>
 
 				<div class="html-chat-js-button-holder">
 
