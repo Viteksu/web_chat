@@ -42,7 +42,7 @@
 		}
 
 		var onlineUsers = new Set();
-		var chatingUsersIn = new Set();
+		var chattingUsersIn = new Set();
 		var name;
 
 		function init() {
@@ -103,15 +103,15 @@
 		if (message.type == "MESSAGE") {
 			var user;
 
-			if (message.recipient == name) {
-				user = name;
+			if (message.sender == name) {
+				user = message.recipient;
 			} else {
 				user = message.sender;
 			}
 
 
-			if (!chatingUsersIn.has(user) && (message.recipient != "ALL")) {
-				chatingUsersIn.add(user);
+			if (!chattingUsersIn.has(user) && (message.recipient != "ALL")) {
+				chattingUsersIn.add(user);
 
 				var parantElement = document.getElementById("tabs");
 				var element = document.createElement('input');
@@ -192,44 +192,18 @@
 	</head>
 	<body onload="init();">
 
-	<!--<div id="body">
-		<div id="menu">
-			<p class="welcome">
-				You signed in as <%= ((UserProfile) session.getAttribute("user")).getLogin()%>
-			</p>
-
-			<div style="clear: both"></div>
-		</div>
-
-		<div id="chatbox">
-			<textarea id="messages" rows="20" cols="50" readonly="readonly"></textarea>
-		</div>
-
-		<form name="message" action="" onsubmit="sendMessage(); return false;">
-
-			<form name="message" action="">
-				<input name="usermsg" type="text" id="message" size="40"/>
-				<input type="button" name="submitmsg" value="Send..." onclick="sendMessage();"/>
-			</form>
-		</form>
-	</div> -->
-
 	<div id="frame" class="frame-holder">
 
 
 	<div id="usersBox" class="users-box">
-		<h4><b>Online Users:</b><h4>
+		<big>Online Users:</big>
 		<textarea class="html-users-box" id="users" rows="25" cols="25" readonly="readonly"></textarea>
 	</div>
 
 	<div id="html-chat">
 		<div class="holder-html-chat">
-
-
+			<big>Happy chatting!</big>
 			<div class="tabs" id = "tabs">
-
-				<input class="tablink" type="button" name="in	" value="ALL" id="ALL" onclick="openChat('messages', this)">
-
 
 				<!--<input class="tablink" type="button" name="inset" value="ALL" id="chatbox" onclick="openChat('messages1', this)">-->
 
@@ -239,6 +213,9 @@
 					<textarea class="html-chat-history tabcontent" id="messages" rows="20" cols="80" readonly="readonly"></textarea>
 					<!--<textarea class="html-chat-history tabcontent" id="messages1" rows="20" cols="80" readonly="readonly"></textarea>-->
 				</div>
+
+				<input class="tablink" type="button" name="in	" value="ALL" id="ALL" onclick="openChat('messages', this)">
+
 			</div>
 
 
@@ -248,7 +225,7 @@
 			</div>
 
 
-			<textarea id="WebChatTextID" placeholder="Type message for chating.." class="html-chat-js-input"></textarea>
+			<textarea id="WebChatTextID" placeholder="Type message for chatting.." class="html-chat-js-input"></textarea>
 
 				<div class="html-chat-js-button-holder">
 
@@ -313,11 +290,8 @@
 		border: 1px solid #C0C0C0;
 		border-bottom: 1px solid #FFFFFF;
 		background: #FFFFFF;
-}
-#tab_1:checked ~ #txt_1,
-#tab_2:checked ~ #txt_2,
-#tab_3:checked ~ #txt_3,
-#tab_4:checked ~ #txt_4 { display: block; }
+		}
+
 
 		</style>
 	</body>
