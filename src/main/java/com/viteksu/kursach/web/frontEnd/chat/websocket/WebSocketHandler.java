@@ -28,6 +28,8 @@ public class WebSocketHandler {
     public void setName(WebSocket webSocket, String name) {
         users.put(webSocket, name);
 
+        System.err.println("name: " + name + "-");
+
         String type = "UPDATE_ADD";
         String sender = "SERVER";
         String recipient = "ALL";

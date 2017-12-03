@@ -41,7 +41,9 @@
 
 		}
 
-		var set = new Set();
+		var onlineUsers = new Set();
+		var chatingUsersOut = new Set();
+		var chatingUsersIn = new Set();
 		var name;
 
 		function init() {
@@ -75,6 +77,7 @@
 			return message;
 		});
 
+
 		var $usersArea = document.getElementById("users");
 
 		 if (message.type == "ERR") {
@@ -85,22 +88,78 @@
 		}
 
 
-
 		if (message.type == "UPDATE_ADD") {
 
-			set.add(message.message);
+			onlineUsers.add(message.message);
 
 			$usersArea.value = "";
 
-			set.forEach(function callback(item) {
+			onlineUsers.forEach(function callback(item) {
 				$usersArea.value = $usersArea.value + item + "\n";
 			});
 
-			console.log(message);
 			return;
 		}
 
-		$textarea.value = $textarea.value + message.sender + ": " + message.message + "\n";
+		if (message.type == "MESSAGE") {
+			var user;
+
+			if (message.recipient == name) {
+				user = name;
+			} else {
+				user = message.sender;
+			}
+
+
+			if (!chatingUsersIn.has(user) && (message.recipient != "ALL")) {
+				chatingUsersIn.add(user);
+
+				var parantElement = document.getElementById("tabs");
+				var element = document.createElement('input');
+
+				element.setAttribute("class", "tablink");
+				element.setAttribute("type", "button");
+				element.setAttribute("name", "inset");
+				element.setAttribute("value", user);
+				element.setAttribute("id", "button" + user);
+
+				var openChat = "openChat('" + user + "', this);";
+				element.setAttribute("onclick", openChat);
+
+
+				parantElement.appendChild(element);
+
+
+				parantElement = document.getElementById('chatbox');
+				var element = document.createElement('textarea');
+
+				element.setAttribute("class", "html-chat-history tabcontent");
+				element.setAttribute("cols", "80");
+				element.setAttribute("rows", "20");
+				element.setAttribute("id", user);
+				element.setAttribute("readonly", "readonly");
+
+				parantElement.appendChild(element);
+
+
+			}
+
+
+			console.log("recipient " + message.recipient);
+			var $textField = document.getElementById(user);
+
+
+
+			if (message.recipient == "ALL") {
+				$textarea.value = $textarea.value + message.sender + ": " + message.message + "\n";
+			} else {
+				$textField.value = $textField.value + message.sender + ": " + message.message + "\n";
+			}
+
+			return;
+		}
+
+
 		}
 
 		ws.onerror = function (event) {
@@ -167,20 +226,19 @@
 		<div class="holder-html-chat">
 
 
-			<div class="tabs">
+			<div class="tabs" id = "tabs">
 
-				<input type="radio" name="inset" value="" id="chatbox" checked>
-				<label for="tab_1">ALL</label>
+				<input class="tablink" type="button" name="in	" value="ALL" id="ALL" onclick="openChat('messages', this)">
 
-				<input type="radio" name="inset" value="" id="2" checked>
-				<label for="tab_1">ALL</label>
+
+				<!--<input class="tablink" type="button" name="inset" value="ALL" id="chatbox" onclick="openChat('messages1', this)">-->
+
+
 
 				<div id="chatbox">
-					<textarea class="html-chat-history" id="messages" rows="20" cols="80" readonly="readonly"></textarea>
+					<textarea class="html-chat-history tabcontent" id="messages" rows="20" cols="80" readonly="readonly"></textarea>
+					<!--<textarea class="html-chat-history tabcontent" id="messages1" rows="20" cols="80" readonly="readonly"></textarea>-->
 				</div>
-
-				<div id="2">HELLO!</div>
-
 			</div>
 
 
@@ -204,7 +262,20 @@
 		</div>
 	</div>
 	</div>
+	<script>
+	function openChat(chatName,elmnt) {
+		var i, tabcontent, tablinks;
+		tabcontent = document.getElementsByClassName("tabcontent");
+		for (i = 0; i < tabcontent.length; i++) {
+			tabcontent[i].style.display = "none";
+		}
+		tablinks = document.getElementsByClassName("tablink");
 
+		document.getElementById(chatName).style.display = "block";
+	}
+	// Get the element with id="defaultOpen" and click on it
+	document.getElementById("ALL").click();
+</script>
 	<style>
 		/* Здесь настроим css стили для чата*/
 		.frame-holder{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 955px;}
@@ -220,8 +291,9 @@
 		.users-box{position:fixed; top:20; left: 700; width:198px; border: 1px solid #ccc;padding:10px;background-color: #fff;}
 		.html-users-box{resize: none}
 
+		.html-chat-history{display:none;}
 		.tabs { width: 100%; padding: 0px; margin: 0 auto; }
-		.tabs>input { display:none}
+		.tabs>input { display:block float:left; width: 50px; height: 35px;}
 		.tabs>div {
 			padding: 0px;
 			border: 1px solid #C0C0C0;
