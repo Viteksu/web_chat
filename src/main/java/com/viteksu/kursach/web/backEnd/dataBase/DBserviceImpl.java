@@ -12,7 +12,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.service.ServiceRegistry;
 
 public class DBserviceImpl implements DBservice {
-    private final SessionFactory factory = createFactory(getH2Configuration());
+    private final SessionFactory factory = createFactory(getConfiguration());
 
     @Override
     public void update(UserProfile userProfile) {
@@ -41,7 +41,7 @@ public class DBserviceImpl implements DBservice {
     public UserProfile getUserById(long id) {
         Session session = factory.openSession();
 
-        UserProfile student = session.get(UserProfile.class, id);
+        UserProfile student = (UserProfile) session.get(UserProfile.class, id);
 
         session.close();
         return student;
@@ -61,18 +61,18 @@ public class DBserviceImpl implements DBservice {
         return configuration.buildSessionFactory(serviceRegistry);
     }
 
-    private Configuration getH2Configuration() {
+    private Configuration getConfiguration() {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(UserProfile.class);
         configuration.addAnnotatedClass(Message.class);
 
 
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:h2:./h2db");
-        configuration.setProperty("hibernate.connection.username", "test");
-        configuration.setProperty("hibernate.connection.password", "test");
-        //        configuration.setProperty("hibernate.show_sql", "true");
+        configuration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/web_chat");
+        configuration.setProperty("hibernate.connection.username", "root");
+        configuration.setProperty("hibernate.connection.password", "7412");
+        configuration.setProperty("hibernate.show_sql", "true");
         configuration.setProperty("hibernate.hbm2ddl.auto", "create");
         return configuration;
     }

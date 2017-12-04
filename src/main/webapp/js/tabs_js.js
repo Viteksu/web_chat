@@ -7,7 +7,11 @@ function openChat(chatName,elmnt) {
 		tablinks = document.getElementsByClassName("tablink");
 
 		document.getElementById(chatName).style.display = "block";
-	}
+		console.log(chatName);
+
+		document.getElementById("clickedTab").innerHTML = chatName;
+		}
 	// Get the element with id="defaultOpen" and click on it
-	document.getElementById("ALL").click();
+	document.getElementById("input_ALL").click();
+
 	

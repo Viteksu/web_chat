@@ -46,7 +46,8 @@ class Message {
 
 		ws.onmessage = function (event) {
 
-			var $textarea = document.getElementById("messages");
+			var $textarea = document.getElementById("ALL");
+			console.log($textarea);
 
 
 			var message = new Message();
@@ -116,7 +117,6 @@ class Message {
 				var openChat = "openChat('" + user + "', this);";
 				element.setAttribute("onclick", openChat);
 
-
 				parantElement.appendChild(element);
 
 
@@ -128,7 +128,7 @@ class Message {
 				element.setAttribute("rows", "20");
 				element.setAttribute("id", user);
 				element.setAttribute("readonly", "readonly");
-
+				element.setAttribute("onkeydown", "SendComment(event)");
 				parantElement.appendChild(element);
 
 
@@ -179,3 +179,10 @@ class Message {
 
 			messageField.value = '';
 		}
+
+		function SendComment(e) {
+			e = e || window.event;
+			if (e.keyCode == 13 && e.ctrlKey) {
+				sendMessage();
+		};
+};

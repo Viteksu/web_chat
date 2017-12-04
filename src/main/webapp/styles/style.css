@@ -1,0 +1,51 @@
+/* Здесь настроим css стили для чата*/
+		.frame-holder{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 955px; margin-left: auto; margin-right: auto; height: auto;}
+		.holder-html-chat{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 600px; }
+		.html-chat-history{ max-width: 596px; min-width: 200px; overflow: auto;max-height: 900px; min-height: 200px; border: 0px solid #ccc;padding: 5px; width: 600px;}
+		.html-chat-js-name{ margin-top:7px; }
+		.html-chat-js-input{ max-width: 600px; max-height: 100px; width: 600px; height: 45; margin-top:10px; min-width: 200px; min-height: 20px}
+		.html-chat-js-button-holder{ margin-bottom: 0px;margin-top: 10px; }
+		.html-chat-js-button-holder input{ width: 200px; }
+		.html-chat-js-answer{ float:right; }
+		.html-chat-js-answer a{ color: #777;font-size: 15px; font-family: cursive;}
+		.html-chat-msg{ margin: 0px; }
+		.html-users-box{
+				resize: none
+				width: 300px;
+				height: 300px;
+			}
+		.users-box {
+			position: relative;
+			bottom: 507;
+			left: 680px;
+			float: left;
+			width: 200px;
+			border: 1px solid #ccc;
+			padding: 10px;
+			background-color: #fff;
+		}
+
+		.html-chat-history{display:none;}
+		.tabs { width: 100%; padding: 0px; margin: 0 auto; }
+		.tabs>input { display:block float:left; width: 50px; height: 35px;}
+		.tabs>div {
+			padding: 0px;
+			border: 1px solid #C0C0C0;
+			background: #FFFFFF;
+		}
+		.tabs>label {
+		display: inline-block;
+		padding: 7px;
+		margin: 0 -
+		text-align: center;
+		color: #666666;
+		border: 1px solid #C0C0C0;
+		background: #E0E0E0;
+		}
+		.tabs>input:checked + label {
+		color: #000000;
+		border: 1px solid #C0C0C0;
+		border-bottom: 1px solid #FFFFFF;
+		background: #FFFFFF;
+		}
+

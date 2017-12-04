@@ -49,8 +49,8 @@ public class UserProfile implements Serializable {
     }
 
 
-    public void addMassage(String mass) {
-//        messages.add(new Message(mass));
+    public void addMassage(Message message) {
+        messages.add(message);
 
     }
 

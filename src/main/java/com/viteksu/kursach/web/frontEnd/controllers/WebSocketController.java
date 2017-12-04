@@ -12,6 +12,11 @@ import java.io.IOException;
 public class WebSocketController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getSession().getAttribute("user") == null) {
+            resp.sendRedirect("/OOP");
+            return;
+        }
+
         resp.setStatus(HttpServletResponse.SC_OK);
         req.getRequestDispatcher("/chat.jsp").forward(req, resp);
     }

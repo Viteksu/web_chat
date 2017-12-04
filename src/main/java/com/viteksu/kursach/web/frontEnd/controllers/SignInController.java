@@ -38,8 +38,6 @@ public class SignInController extends HttpServlet {
         printStream.println("Getting userProfik");
         UserProfile userProfile = frontEndService.isAuthenticated(login);
 
-        printStream.println("user == null - " + (userProfile == null));
-
         System.err.println("If checking");
         if (userProfile != null && userProfile.getLogin().equals(login)) {
             System.err.println("If - true");
