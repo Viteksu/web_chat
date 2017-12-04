@@ -4,201 +4,11 @@
 		<meta charset="UTF-8"/>
 		<title>Web Chat</title>
 		<!--<script language="JavaScript" src="http://local.host:8080/OOP/script.js></script>-->
-
-
-		<script>
-		class Message {
-
-			constructor() {
-				this.type = "MESSAGE";
-			}
-
-			parse(mess) {
-				var result = "";
-				var i = 1;
-				if (mess == null) {
-					return;
-				}
-
-				if (mess.charAt(0) == "@" && mess.length > 1) {
-					for (; mess.charAt(i) != " " && i < mess.length; i++) {
-						result = result + mess.charAt(i);
-					}
-					this.recipient = result;
-					result = "";
-				} else {
-					this.recipient = "ALL";
-					i = 0;
-				}
-
-				for (; i < mess.length; i++) {
-					result = result + mess.charAt(i);
-				}
-
-				this.message = result;
-
-			}
-
-		}
-
-		var onlineUsers = new Set();
-		var chattingUsersIn = new Set();
-		var name;
-
-		function init() {
-		ws = new WebSocket("ws://localhost:8080/OOP/chatMess");
-
-		ws.onopen = function (event) {
-			name = "<%= ((UserProfile) session.getAttribute("user")).getLogin()%>";
-			ws.send(name);
-		}
-
-		ws.onmessage = function (event) {
-
-			var $textarea = document.getElementById("messages");
-
-
-			var message = new Message();
-			JSON.parse(event.data, function(key, value) {
-
-			if (key == "type") {
-				message.type = value;
-			}
-			if (key == "recipient") {
-				message.recipient = value;
-			}
-			if (key == "sender") {
-				message.sender = value;
-			}
-			if (key == "message") {
-				message.message = value;
-			}
-			return message;
-		});
-
-
-		var $usersArea = document.getElementById("users");
-
-		 if (message.type == "ERR") {
-
-			 $textarea.value = $textarea.value + "ERROR \n";
-
-			return;
-		}
-
-
-		if (message.type == "UPDATE_ADD") {
-
-			onlineUsers.add(message.message);
-
-			$usersArea.value = "";
-
-			onlineUsers.forEach(function callback(item) {
-				$usersArea.value = $usersArea.value + item + "\n";
-			});
-
-			return;
-		}
-
-		if (message.type == "MESSAGE") {
-			var user;
-
-			if (message.sender == name) {
-				user = message.recipient;
-			} else {
-				user = message.sender;
-			}
-
-
-			if (!chattingUsersIn.has(user) && (message.recipient != "ALL")) {
-				chattingUsersIn.add(user);
-
-				var parantElement = document.getElementById("tabs");
-				var element = document.createElement('input');
-
-				element.setAttribute("class", "tablink");
-				element.setAttribute("type", "button");
-				element.setAttribute("name", "inset");
-				element.setAttribute("value", user);
-				element.setAttribute("id", "button" + user);
-
-				var openChat = "openChat('" + user + "', this);";
-				element.setAttribute("onclick", openChat);
-
-
-				parantElement.appendChild(element);
-
-
-				parantElement = document.getElementById('chatbox');
-				var element = document.createElement('textarea');
-
-				element.setAttribute("class", "html-chat-history tabcontent");
-				element.setAttribute("cols", "80");
-				element.setAttribute("rows", "20");
-				element.setAttribute("id", user);
-				element.setAttribute("readonly", "readonly");
-
-				parantElement.appendChild(element);
-
-
-			}
-
-
-			console.log("recipient " + message.recipient);
-			var $textField = document.getElementById(user);
-
-
-
-			if (message.recipient == "ALL") {
-				$textarea.value = $textarea.value + message.sender + ": " + message.message + "\n";
-			} else {
-				$textField.value = $textField.value + message.sender + ": " + message.message + "\n";
-			}
-
-			return;
-		}
-
-
-		}
-
-		ws.onerror = function (event) {
-			  var $usersArea = document.getElementById("users");
-			  $textarea.value = $textarea.value + "ERROR \nReson: " + event.code;
-		}
-
-		ws.onclose = function (event) {}
-
-		};
-
-
-		function sendMessage() {
-			var messageField = document.getElementById("WebChatTextID");
-			if (messageField.value.length == 0) {
-				return;
-			}
-			var message = name + ":" + messageField.value;
-
-			var message = new Message();
-			message.parse(messageField.value);
-			message.sender = name;
-			var answer = JSON.stringify(message);
-			//console.log(answer);
-
-			ws.send(answer);
-
-			messageField.value = '';
-		}
-		</script>
+		<script type="text/javascript" src="/OOP/js/chat_js.js"></script>
 	</head>
 	<body onload="init();">
 
 	<div id="frame" class="frame-holder">
-
-
-	<div id="usersBox" class="users-box">
-		<big>Online Users:</big>
-		<textarea class="html-users-box" id="users" rows="25" cols="25" readonly="readonly"></textarea>
-	</div>
 
 	<div id="html-chat">
 		<div class="holder-html-chat">
@@ -221,7 +31,7 @@
 
 
 			<div class="html-chat-js-name">
-				Hello <%= ((UserProfile) session.getAttribute("user")).getLogin()%>!
+				You signed in as <span id="name"><%= ((UserProfile) session.getAttribute("user")).getLogin()%></span>!
 			</div>
 
 
@@ -238,26 +48,18 @@
 				</div>
 		</div>
 	</div>
+	<div id="usersBox" class="users-box">
+		<big>Online Users:</big>
+		<textarea class="html-users-box" id="users" rows="25" cols="25" readonly="readonly"></textarea>
 	</div>
-	<script>
-	function openChat(chatName,elmnt) {
-		var i, tabcontent, tablinks;
-		tabcontent = document.getElementsByClassName("tabcontent");
-		for (i = 0; i < tabcontent.length; i++) {
-			tabcontent[i].style.display = "none";
-		}
-		tablinks = document.getElementsByClassName("tablink");
+	</div>
+	<script type="text/javascript" src="/OOP/js/tabs_js.js"></script>
 
-		document.getElementById(chatName).style.display = "block";
-	}
-	// Get the element with id="defaultOpen" and click on it
-	document.getElementById("ALL").click();
-</script>
 	<style>
 		/* Здесь настроим css стили для чата*/
-		.frame-holder{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 955px;}
+		.frame-holder{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 955px; margin-left: auto; margin-right: auto; height: auto;}
 		.holder-html-chat{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 600px; }
-		.html-chat-history{ max-width: 600px; min-width: 200px; overflow: auto;max-height: 900px; min-height: 200px; border: 1px solid #ccc;padding: 5px;}
+		.html-chat-history{ max-width: 600px; min-width: 200px; overflow: auto;max-height: 900px; min-height: 200px; border: 1px solid #ccc;padding: 5px; width: 600;}
 		.html-chat-js-name{ margin-top:7px; }
 		.html-chat-js-input{ max-width: 600px; max-height: 100px; width: 600px; height: 45; margin-top:10px; min-width: 200px; min-height: 20px}
 		.html-chat-js-button-holder{ margin-bottom: 0px;margin-top: 10px; }
@@ -265,8 +67,16 @@
 		.html-chat-js-answer{ float:right; }
 		.html-chat-js-answer a{ color: #777;font-size: 15px; font-family: cursive;}
 		.html-chat-msg{ margin: 0px; }
-		.users-box{position:fixed; top:20; left: 700; width:198px; border: 1px solid #ccc;padding:10px;background-color: #fff;}
 		.html-users-box{resize: none}
+		.users-box {
+			position: relative;
+			top: -505px;
+			left: 680px;
+			width: 198px;
+			border: 1px solid #ccc;
+			padding: 10px;
+			background-color: #fff;
+		}
 
 		.html-chat-history{display:none;}
 		.tabs { width: 100%; padding: 0px; margin: 0 auto; }

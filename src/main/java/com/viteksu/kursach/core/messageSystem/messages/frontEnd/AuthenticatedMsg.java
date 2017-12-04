@@ -15,6 +15,6 @@ public class AuthenticatedMsg extends FrontEndMsg {
 
     @Override
     public void execute(FrontEndService frontEnd) {
-        ((FrontEndServiceImpl) frontEnd).setAuthenticated(getUserProfile());
+        frontEnd.setAuthenticated(getUserProfile());
     }
 }

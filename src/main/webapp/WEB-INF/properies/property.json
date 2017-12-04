@@ -5,7 +5,9 @@
     "/OOP/chat",
     "/OOP/signup",
     "/OOP/signin",
-    "/OOP/chatMess"
+    "/OOP/chatMess",
+    "/OOP/js/chat_js.js",
+    "/OOP/js/tabs_js.js"
   ],
   "maxUsers": 10
 }
