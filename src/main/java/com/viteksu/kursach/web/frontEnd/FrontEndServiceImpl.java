@@ -41,9 +41,9 @@ public class FrontEndServiceImpl implements FrontEndService {
 
 
     public void setRegistred(UserProfile userProfile, boolean result) {
-        if (userProfile != null)
+        if (userProfile != null) {
             registredUsers.add(userProfile.getLogin());
-
+        }
         synchronized (regLock) {
             regLock.notifyAll();
         }
@@ -72,9 +72,7 @@ public class FrontEndServiceImpl implements FrontEndService {
     public UserProfile isAuthenticated(String login) {
         synchronized (authLock) {
             try {
-                System.err.println("isAuthenticated BEFORE wait ");
                 authLock.wait();
-                System.err.println("isAuthenticated AFTER wait ");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

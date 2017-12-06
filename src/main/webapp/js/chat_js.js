@@ -47,8 +47,6 @@ class Message {
 		ws.onmessage = function (event) {
 
 			var $textarea = document.getElementById("ALL");
-			console.log($textarea);
-
 
 			var message = new Message();
 			JSON.parse(event.data, function(key, value) {
@@ -92,6 +90,19 @@ class Message {
 			return;
 		}
 
+		console.log(message);
+
+		if (message.type == "UPDATE_DEL") {
+			onlineUsers.delete(message.message);
+
+			$usersArea.value = "";
+
+			onlineUsers.forEach(function callback(item) {
+				$usersArea.value = $usersArea.value + item + "\n";
+			});
+
+			return;
+		}
 		if (message.type == "MESSAGE") {
 			var user;
 
@@ -135,7 +146,6 @@ class Message {
 			}
 
 
-			console.log("recipient " + message.recipient);
 			var $textField = document.getElementById(user);
 
 

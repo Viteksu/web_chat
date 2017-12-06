@@ -22,7 +22,6 @@ public class AuthorizationMsg extends AccountServiceMsg {
         UserProfile user = accountService.getUserByLogin(getLogin());
 
 
-        System.err.println("Execute auth mess ");
         if (user != null && user.getPass().equals(getPass())) {
             accountService.getMessageSystem().sendMessage(new AuthenticatedMsg(getTo(), getFrom(), user));
             return;

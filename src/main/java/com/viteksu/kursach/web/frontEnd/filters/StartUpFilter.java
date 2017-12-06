@@ -14,7 +14,6 @@ public class StartUpFilter extends HttpFilter {
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         Loader.getInstance();
         chain.doFilter(req, res);
-        System.err.println("StartUP filter");
 
     }
 }

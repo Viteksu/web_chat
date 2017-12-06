@@ -37,15 +37,15 @@ public class Loader {
         if (propertyChecker == null) {
             propertyChecker = new PropertyChecker(servletContext);
             new Thread(propertyChecker).start();
-
-            synchronized (propertyChecker) {
-                try {
-                    propertyChecker.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if (propertyChecker != null) {
+                synchronized (propertyChecker) {
+                    try {
+                        propertyChecker.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-
         }
 
         return propertyChecker;

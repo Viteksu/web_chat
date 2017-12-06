@@ -9,8 +9,8 @@ import com.viteksu.kursach.web.backEnd.dataBase.DBservice;
 import com.viteksu.kursach.web.backEnd.dataBase.DBserviceImpl;
 
 public class AccountServiceImpl implements AccountService {
-    private final DBservice dbService = new DBserviceImpl();
-//    private final DBservice dbService = new DBMock();
+    //    private final DBservice dbService = new DBserviceImpl();
+    private final DBservice dbService = new DBMock();
 
     private final Address address = new Address();
 

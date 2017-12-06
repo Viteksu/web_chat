@@ -5,12 +5,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "message")
+@Table(name = "messages")
 public class Message implements Serializable {
     private static final long serialVersionUID = -7611543623321789238L;
 
     @Id
-    @Column(name = "mess_id", nullable = false)
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -28,6 +28,9 @@ public class Message implements Serializable {
         this.message = mess;
         this.recipient = recipient;
         this.type = type;
+    }
+
+    public Message() {
     }
 
     public String getType() {
@@ -67,4 +70,3 @@ public class Message implements Serializable {
     }
 
 }
-

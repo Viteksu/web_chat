@@ -15,6 +15,6 @@ public class RegistredMsg extends FrontEndMsg {
 
     @Override
     public void execute(FrontEndService frontEnd) {
-        ((FrontEndServiceImpl) frontEnd).setRegistred(getUserProfile(), result);
+        frontEnd.setRegistred(getUserProfile(), result);
     }
 }

@@ -6,34 +6,44 @@ import com.google.gson.JsonParser;
 import com.viteksu.kursach.web.backEnd.accounts.Message;
 
 import java.io.IOException;
-import java.io.PrintStream;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WebSocketHandler {
     private static WebSocketHandler webSocketHandler = new WebSocketHandler();
     private Map<WebSocket, String> users = new ConcurrentHashMap<>();
+    private List<Message> messages = new LinkedList<>();
 
     private WebSocketHandler() {
     }
 
-    public void addUser(WebSocket webSocket) {
-        users.put(webSocket, "");
-    }
 
     public void removeUser(WebSocket webSocket) {
+        String type = "UPDATE_DEL";
+        String sender = "SERVER";
+        String recipient = "ALL";
+
+        String login = users.get(webSocket);
         users.remove(webSocket);
+
+        Message message = new Message(type, sender, recipient, login);
+        Gson gson = new Gson();
+
+        String answerJson = gson.toJson(message);
+
+        sendToClient(answerJson, recipient, sender);
+
+
     }
 
-    public void setName(WebSocket webSocket, String name) {
+    void addUser(WebSocket webSocket, String name) {
         users.put(webSocket, name);
-
-        System.err.println("name: " + name + "-");
 
         String type = "UPDATE_ADD";
         String sender = "SERVER";
         String recipient = "ALL";
-
 
         for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
             String login = entry.getValue();
@@ -42,8 +52,6 @@ public class WebSocketHandler {
             Message message = new Message(type, sender, recipient, login);
             Gson gson = new Gson();
 
-            System.err.println("From: " + sender);
-            System.err.println("Mess:" + login);
 
             String answerJson = gson.toJson(message);
 
@@ -77,6 +85,29 @@ public class WebSocketHandler {
 
     }
 
+    private void addMessage(Message message) {
+        if (message.getType().equals("MESSAGE")) {
+            messages.add(message);
+
+            if (messages.size() > 1) {
+                List<Message> newListMess = new LinkedList<>();
+                List<Message> lastMess = new LinkedList<>(messages);
+                messages = newListMess;
+
+
+                for (Message m : lastMess) {
+                    System.err.println(m.getMessage() + " -----");
+                }
+                // работать с lastMess!!
+
+
+                // отправить в БД
+            }
+        }
+
+
+    }
+
     public void send(String jsonMessage) {
 
         String type;
@@ -100,10 +131,10 @@ public class WebSocketHandler {
         }
 
         Message mess = new Message(type, sender, recipient, message);
-        Gson gson = new Gson();
 
-        System.err.println("From: " + sender);
-        System.err.println("Mess:" + message);
+        addMessage(mess);
+
+        Gson gson = new Gson();
 
         sendToClient(gson.toJson(mess), recipient, sender);
     }

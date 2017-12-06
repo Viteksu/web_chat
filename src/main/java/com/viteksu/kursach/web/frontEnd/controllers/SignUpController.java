@@ -31,11 +31,11 @@ public class SignUpController extends HttpServlet {
 
         boolean result = frontEndService.isRegistered(login);
 
-        if (result)
+        if (result) {
             resp.setStatus(HttpServletResponse.SC_OK);
-        else
+        } else {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-
+        }
         resp.sendRedirect("/OOP");
 
     }

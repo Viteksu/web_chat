@@ -27,7 +27,7 @@ public class UserProfile implements Serializable {
     }
 
     @Id
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -37,22 +37,11 @@ public class UserProfile implements Serializable {
     @Column(name = "password", nullable = false)
     private final String pass;
 
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Message.class)
-    @JoinTable(name = "user_mess",
-            joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "mess_id")})
-    private List<Message> messages = new LinkedList<>();
-
     public UserProfile(String login, String pass) {
         this.login = login;
         this.pass = pass;
     }
 
-
-    public void addMassage(Message message) {
-        messages.add(message);
-
-    }
 
     public String getLogin() {
         return login;
@@ -66,16 +55,8 @@ public class UserProfile implements Serializable {
         return id;
     }
 
-    public List<Message> getMessages() {
-        return messages;
-    }
-
-    public void removeMess(String mess) {
-        messages.remove(mess);
-    }
-
     @Override
     public String toString() {
-        return "id-" + id + " login-" + login + " pass-" + pass + "\n" + messages;
+        return "id-" + id + " login-" + login + " pass-" + pass;
     }
 }

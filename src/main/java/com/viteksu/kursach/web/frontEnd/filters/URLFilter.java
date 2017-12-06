@@ -15,10 +15,10 @@ import java.io.IOException;
 public class URLFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-
-        System.err.println("URL filter");
-
         PropertyChecker propertyChecker = Loader.getInstance().getPropertyChecker(getServletContext());
+        if (propertyChecker == null) {
+
+        }
         if (propertyChecker.isURI(req.getRequestURI())) {
             chain.doFilter(req, res);
         } else {

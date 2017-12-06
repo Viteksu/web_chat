@@ -26,27 +26,19 @@ public class SignInController extends HttpServlet {
         String login = req.getParameter("login");
         String pass = req.getParameter("password");
 
-        PrintStream printStream = System.err;
 
-        printStream.println("Front end getting");
         FrontEndService frontEndService = AddressService.getInstance().getFrontEnd();
 
-        printStream.println("Front end auth begin");
-        frontEndService.authenticate(login, pass);
-        printStream.println("Front end auth stop");
 
-        printStream.println("Getting userProfik");
+        frontEndService.authenticate(login, pass);
+
         UserProfile userProfile = frontEndService.isAuthenticated(login);
 
-        System.err.println("If checking");
         if (userProfile != null && userProfile.getLogin().equals(login)) {
-            System.err.println("If - true");
             resp.setStatus(HttpServletResponse.SC_OK);
             req.getSession().setAttribute("user", userProfile);
-            System.err.println("Redirect to caht");
             resp.sendRedirect("/OOP/chat");
         } else {
-            System.err.println("If - false");
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("UNAUTHORIZED");
         }
