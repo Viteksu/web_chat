@@ -1,7 +1,7 @@
 /* Здесь настроим css стили для чата*/
 		.frame-holder{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 955px; margin-left: auto; margin-right: auto; height: auto;}
 		.holder-html-chat{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 600px; }
-		.html-chat-history{ max-width: 596px; min-width: 200px; overflow: auto;max-height: 900px; min-height: 200px; border: 0px solid #ccc;padding: 5px; width: 600px;}
+		.html-chat-history{ max-width: 596px; min-width: 596px; overflow: auto;max-height: 900px; min-height: 200px; border: 0px solid #ccc;padding: 5px; width: 596px;}
 		.html-chat-js-name{ margin-top:7px; }
 		.html-chat-js-input{ max-width: 600px; max-height: 100px; width: 600px; height: 45; margin-top:10px; min-width: 200px; min-height: 20px}
 		.html-chat-js-button-holder{ margin-bottom: 0px;margin-top: 10px; }
@@ -10,13 +10,14 @@
 		.html-chat-js-answer a{ color: #777;font-size: 15px; font-family: cursive;}
 		.html-chat-msg{ margin: 0px; }
 		.html-users-box{
+				position: relative;
 				resize: none
 				width: 300px;
 				height: 300px;
 			}
 		.users-box {
 			position: relative;
-			bottom: 507;
+			top: -507;
 			left: 680px;
 			float: left;
 			width: 200px;
@@ -48,4 +49,3 @@
 		border-bottom: 1px solid #FFFFFF;
 		background: #FFFFFF;
 		}
-
