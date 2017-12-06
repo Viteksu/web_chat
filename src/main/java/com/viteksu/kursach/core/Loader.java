@@ -1,17 +1,14 @@
 package com.viteksu.kursach.core;
 
 import com.viteksu.kursach.core.messageSystem.MessageSystem;
-import com.viteksu.kursach.core.messageSystem.addressService.Address;
 import com.viteksu.kursach.core.messageSystem.addressService.AddressService;
 import com.viteksu.kursach.core.parameters.PropertyChecker;
-import com.viteksu.kursach.web.backEnd.accounts.AccountService;
-import com.viteksu.kursach.web.backEnd.accounts.AccountServiceImpl;
-import com.viteksu.kursach.web.backEnd.accounts.UserProfile;
+import com.viteksu.kursach.web.backEnd.accounts.UserDataService;
+import com.viteksu.kursach.web.backEnd.accounts.UserDataServiceImpl;
 import com.viteksu.kursach.web.frontEnd.FrontEndService;
 import com.viteksu.kursach.web.frontEnd.FrontEndServiceImpl;
 
 import javax.servlet.ServletContext;
-import java.io.InputStream;
 
 
 public class Loader {
@@ -58,10 +55,10 @@ public class Loader {
 
         AddressService addressService = AddressService.getInstance();
         MessageSystem messageSystem = new MessageSystem();
-        AccountService accountService = new AccountServiceImpl(messageSystem);
+        UserDataService userDataService = new UserDataServiceImpl(messageSystem);
         FrontEndService frontEndService = new FrontEndServiceImpl(messageSystem);
 
-        new Thread(accountService).start();
+        new Thread(userDataService).start();
         new Thread(frontEndService).start();
     }
 }

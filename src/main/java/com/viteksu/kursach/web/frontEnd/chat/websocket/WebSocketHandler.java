@@ -3,9 +3,13 @@ package com.viteksu.kursach.web.frontEnd.chat.websocket;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.viteksu.kursach.core.messageSystem.addressService.AddressService;
+import com.viteksu.kursach.core.messageSystem.messages.userDataService.userMessage.AddingMessageMsg;
+import com.viteksu.kursach.core.messageSystem.messages.userDataService.userMessage.GettingMessageMsg;
 import com.viteksu.kursach.web.backEnd.accounts.Message;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -45,12 +49,13 @@ public class WebSocketHandler {
         String sender = "SERVER";
         String recipient = "ALL";
 
+        Gson gson = new Gson();
         for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
             String login = entry.getValue();
 
 
             Message message = new Message(type, sender, recipient, login);
-            Gson gson = new Gson();
+
 
 
             String answerJson = gson.toJson(message);
@@ -58,7 +63,24 @@ public class WebSocketHandler {
             sendToClient(answerJson, recipient, sender);
         }
 
+        LinkedHashSet<Message> messages = new LinkedHashSet<>();
 
+        AddressService addressService = AddressService.getInstance();
+        addressService.getMessageSystem().sendMessage(new GettingMessageMsg(addressService.getFrontEnd().getAddress()
+                , addressService.getUserDataService().getAddress(), name, GettingMessageMsg.SENDER));
+
+        addressService.getMessageSystem().sendMessage(new GettingMessageMsg(addressService.getFrontEnd().getAddress()
+                , addressService.getUserDataService().getAddress(), name, GettingMessageMsg.RECIPIENT));
+
+        messages.addAll(addressService.getFrontEnd().getMessages(name));
+
+        for (Message m : messages) {
+            if (m != null) {
+                String answerJson = gson.toJson(m);
+                System.err.println(m.getMessage() + " -- handler");
+                sendToClient(answerJson, recipient, sender);
+            }
+        }
     }
 
     private void sendToClient(String jsonMess, String recipient, String sender) {
@@ -94,10 +116,10 @@ public class WebSocketHandler {
                 List<Message> lastMess = new LinkedList<>(messages);
                 messages = newListMess;
 
+                AddressService addressService = AddressService.getInstance();
 
-                for (Message m : lastMess) {
-                    System.err.println(m.getMessage() + " -----");
-                }
+                addressService.getMessageSystem().sendMessage(new AddingMessageMsg(addressService.getFrontEnd().getAddress()
+                        , addressService.getUserDataService().getAddress(), lastMess));
                 // работать с lastMess!!
 
 

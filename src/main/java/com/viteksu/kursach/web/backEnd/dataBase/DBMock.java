@@ -5,7 +5,8 @@ import com.viteksu.kursach.web.backEnd.accounts.UserProfile;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DBMock implements DBservice {
+// Лень реалтзововать методы
+abstract public class DBMock implements DBservice {
     private static int id = 0;
 
     private Map<Integer, UserProfile> map = new ConcurrentHashMap<>();

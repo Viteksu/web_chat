@@ -69,4 +69,21 @@ public class Message implements Serializable {
         this.type = type;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        Message message = (Message) obj;
+
+        if (message.recipient.equals(recipient) && message.sender.equals(sender)
+                && message.type.equals(type) && message.message.equals(message)) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return type.hashCode() * message.hashCode() / sender.hashCode() - (recipient.hashCode()) - 4341;
+    }
 }
