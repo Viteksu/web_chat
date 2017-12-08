@@ -9,8 +9,6 @@ public class AuthenticatedMsg extends FrontEndMsg {
 
     public AuthenticatedMsg(Address from, Address to, UserProfile userProfile) {
         super(from, to, userProfile);
-        System.err.println("Sending back mess");
-
     }
 
     @Override

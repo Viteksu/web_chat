@@ -71,7 +71,6 @@ public class WebSocketHandler {
 
         for (Message m : messages) {
             if (m != null) {
-                System.err.println(m);
                 try {
                     webSocket.sendBack(gson.toJson(m));
                 } catch (IOException e) {

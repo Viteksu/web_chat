@@ -92,7 +92,7 @@ public class FrontEndServiceImpl implements FrontEndService {
         try {
             messageSystem.sendMessage(new Authorization(this.getAddress(), addressService.getUserDataService().getAddress(), name, password));
         } catch (Exception e) {
-            System.err.println("Auth");
+            e.printStackTrace();
         }
     }
 
