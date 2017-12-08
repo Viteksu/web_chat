@@ -22,8 +22,6 @@ public class WebSocketHandler {
 
     private WebSocketHandler() {
     }
-
-
     public void removeUser(WebSocket webSocket) {
         String type = "UPDATE_DEL";
         String sender = "SERVER";
@@ -54,12 +52,13 @@ public class WebSocketHandler {
             sendToClient(message);
         }
 
-        sendMessageHistory(name);
+        sendMessageHistory(webSocket, name);
     }
 
 
-    private void sendMessageHistory(String name) {
+    private void sendMessageHistory(WebSocket webSocket, String name) {
         LinkedHashSet<Message> messages = new LinkedHashSet<>();
+        Gson gson = new Gson();
 
         AddressService addressService = AddressService.getInstance();
         addressService.getMessageSystem().sendMessage(new GettingMessageMsg(addressService.getFrontEnd().getAddress()
@@ -69,31 +68,25 @@ public class WebSocketHandler {
         addressService.getMessageSystem().sendMessage(new GettingMessageMsg(addressService.getFrontEnd().getAddress()
                 , addressService.getUserDataService().getAddress(), name, GettingMessageMsg.RECIPIENT));
         messages.addAll(addressService.getFrontEnd().getMessages(name));
+
         for (Message m : messages) {
             if (m != null) {
                 System.err.println(m);
-                sendToClient(Message.setType(m, Message.TYPE_HISTORY));
+                try {
+                    webSocket.sendBack(gson.toJson(m));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
     }
 
     private void sendToClient(Message message) {
-        System.out.println(message.getType());
         Gson gson = new Gson();
         String answerJson = gson.toJson(message);
 
-        if (message.getType().equals("HISTORY")) {
-            for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
-                if (entry.getValue().equals(message.getRecipient()) || entry.getValue().equals(message.getSender()) || entry.getValue().equals("ALL")) {
-                    try {
-                        entry.getKey().sendBack(answerJson);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } else if (message.getRecipient().equals("ALL") || message.getType().equals("ERR")) {
+        if (message.getRecipient().equals("ALL") || message.getType().equals("ERR")) {
             for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
                 try {
                     entry.getKey().sendBack(answerJson);
@@ -160,11 +153,7 @@ public class WebSocketHandler {
         }
 
         Message mess = new Message(type, sender, recipient, message);
-
         addMessage(mess);
-
-        Gson gson = new Gson();
-
         sendToClient(mess);
     }
 

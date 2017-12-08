@@ -52,8 +52,6 @@ public class Loader {
          * Initialization is here
          * */
     private void startUp() {
-
-        AddressService addressService = AddressService.getInstance();
         MessageSystem messageSystem = new MessageSystem();
         UserDataService userDataService = new UserDataServiceImpl(messageSystem);
         FrontEndService frontEndService = new FrontEndServiceImpl(messageSystem);
