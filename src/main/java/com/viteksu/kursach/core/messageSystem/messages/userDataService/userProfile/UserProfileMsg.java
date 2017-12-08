@@ -11,7 +11,6 @@ public abstract class UserProfileMsg extends Message {
 
     @Override
     public void execute(Abonent abonent) {
-        if (abonent instanceof UserDataService)
             execute((UserDataServiceImpl) abonent);
 
     }

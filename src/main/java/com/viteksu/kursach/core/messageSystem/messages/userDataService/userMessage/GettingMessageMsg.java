@@ -5,7 +5,6 @@ import com.viteksu.kursach.core.messageSystem.addressService.Address;
 import com.viteksu.kursach.core.messageSystem.addressService.AddressService;
 import com.viteksu.kursach.web.backEnd.accounts.Message;
 import com.viteksu.kursach.web.backEnd.accounts.UserDataService;
-import com.viteksu.kursach.web.backEnd.accounts.UserProfile;
 
 import java.util.List;
 
@@ -25,9 +24,9 @@ public class GettingMessageMsg extends com.viteksu.kursach.core.messageSystem.me
     @Override
 
     public void execute(Abonent abonent) {
-        if (abonent instanceof UserDataService) {
-            execute((UserDataService) abonent);
-        }
+
+        execute((UserDataService) abonent);
+
     }
 
     public void execute(UserDataService userDataService) {

@@ -2,8 +2,8 @@ package com.viteksu.kursach.core.messageSystem.messages.userDataService.userMess
 
 import com.viteksu.kursach.core.messageSystem.Abonent;
 import com.viteksu.kursach.core.messageSystem.addressService.Address;
-import com.viteksu.kursach.web.backEnd.accounts.UserDataService;
 import com.viteksu.kursach.web.backEnd.accounts.Message;
+import com.viteksu.kursach.web.backEnd.accounts.UserDataService;
 
 import java.util.List;
 
@@ -17,8 +17,7 @@ public class AddingMessageMsg extends com.viteksu.kursach.core.messageSystem.mes
 
     @Override
     public void execute(Abonent abonent) {
-        if (abonent instanceof UserDataService)
-            execute((UserDataService) abonent);
+        execute((UserDataService) abonent);
 
     }
 
