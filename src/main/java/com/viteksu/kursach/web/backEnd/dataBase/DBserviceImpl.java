@@ -104,7 +104,7 @@ public class DBserviceImpl implements DBservice {
         Session session = factory.openSession();
         Criteria criteria = session.createCriteria(Message.class);
         List<Message> messages = new LinkedList<>();
-        messages.addAll(criteria.add(Restrictions.eq("sender", recipient)).list());
+        messages.addAll(criteria.add(Restrictions.eq("recipient", recipient)).list());
         return messages;
     }
 

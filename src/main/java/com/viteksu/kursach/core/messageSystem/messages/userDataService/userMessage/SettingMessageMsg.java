@@ -30,11 +30,6 @@ public class SettingMessageMsg extends com.viteksu.kursach.core.messageSystem.me
 
     public void execute(FrontEndService frontEndService) {
 
-        System.err.println("Setting");
-        for (Message m : messages) {
-            System.err.println(m.getMessage());
-        }
-
 
         frontEndService.setUserMessages(user, messages);
     }

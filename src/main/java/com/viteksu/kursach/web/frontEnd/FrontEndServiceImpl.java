@@ -67,8 +67,11 @@ public class FrontEndServiceImpl implements FrontEndService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        List<Message> messages = new LinkedList<>(userMassages.get(login));
+        userMassages.get(login).clear();
 
-        return new LinkedList<>(userMassages.get(login));
+
+        return messages;
     }
 
     @Override

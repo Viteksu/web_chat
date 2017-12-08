@@ -33,11 +33,8 @@ public class WebSocketHandler {
         users.remove(webSocket);
 
         Message message = new Message(type, sender, recipient, login);
-        Gson gson = new Gson();
 
-        String answerJson = gson.toJson(message);
-
-        sendToClient(answerJson, recipient, sender);
+        sendToClient(message);
 
 
     }
@@ -49,62 +46,72 @@ public class WebSocketHandler {
         String sender = "SERVER";
         String recipient = "ALL";
 
-        Gson gson = new Gson();
         for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
             String login = entry.getValue();
 
-
             Message message = new Message(type, sender, recipient, login);
 
-
-
-            String answerJson = gson.toJson(message);
-
-            sendToClient(answerJson, recipient, sender);
+            sendToClient(message);
         }
 
+        sendMessageHistory(name);
+    }
+
+
+    private void sendMessageHistory(String name) {
         LinkedHashSet<Message> messages = new LinkedHashSet<>();
 
         AddressService addressService = AddressService.getInstance();
         addressService.getMessageSystem().sendMessage(new GettingMessageMsg(addressService.getFrontEnd().getAddress()
                 , addressService.getUserDataService().getAddress(), name, GettingMessageMsg.SENDER));
+        messages.addAll(addressService.getFrontEnd().getMessages(name));
 
         addressService.getMessageSystem().sendMessage(new GettingMessageMsg(addressService.getFrontEnd().getAddress()
                 , addressService.getUserDataService().getAddress(), name, GettingMessageMsg.RECIPIENT));
-
         messages.addAll(addressService.getFrontEnd().getMessages(name));
-
         for (Message m : messages) {
             if (m != null) {
-                String answerJson = gson.toJson(m);
-                System.err.println(m.getMessage() + " -- handler");
-                sendToClient(answerJson, recipient, sender);
+                System.err.println(m);
+                sendToClient(Message.setType(m, Message.TYPE_HISTORY));
             }
         }
+
     }
 
-    private void sendToClient(String jsonMess, String recipient, String sender) {
-        if (recipient.equals("ALL") || recipient.equals("ERR")) {
+    private void sendToClient(Message message) {
+        System.out.println(message.getType());
+        Gson gson = new Gson();
+        String answerJson = gson.toJson(message);
+
+        if (message.getType().equals("HISTORY")) {
+            for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
+                if (entry.getValue().equals(message.getRecipient()) || entry.getValue().equals(message.getSender()) || entry.getValue().equals("ALL")) {
+                    try {
+                        entry.getKey().sendBack(answerJson);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else if (message.getRecipient().equals("ALL") || message.getType().equals("ERR")) {
             for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
                 try {
-                    entry.getKey().sendBack(jsonMess);
+                    entry.getKey().sendBack(answerJson);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         } else {
             for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
-                if (entry.getValue().equals(recipient) || entry.getValue().equals(sender)) {
-
+                if (entry.getValue().equals(message.getRecipient()) || entry.getValue().equals(message.getSender())) {
                     try {
-                        entry.getKey().sendBack(jsonMess);
+                        entry.getKey().sendBack(answerJson);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }
-
     }
 
     private void addMessage(Message message) {
@@ -158,7 +165,7 @@ public class WebSocketHandler {
 
         Gson gson = new Gson();
 
-        sendToClient(gson.toJson(mess), recipient, sender);
+        sendToClient(mess);
     }
 
     public static WebSocketHandler getInsance() {
