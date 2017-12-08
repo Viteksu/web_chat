@@ -1,14 +1,14 @@
-package com.viteksu.kursach.core.messageSystem.messages.accountService;
+package com.viteksu.kursach.core.messageSystem.messages.userDataService.userProfile;
 
 import com.viteksu.kursach.core.messageSystem.addressService.Address;
 import com.viteksu.kursach.core.messageSystem.messages.frontEnd.AuthenticatedMsg;
-import com.viteksu.kursach.web.backEnd.accounts.AccountServiceImpl;
+import com.viteksu.kursach.web.backEnd.accounts.UserDataServiceImpl;
 import com.viteksu.kursach.web.backEnd.accounts.UserProfile;
 
-public class AuthorizationMsg extends AccountServiceMsg {
+public class Authorization extends UserProfileMsg {
     private final String pass;
 
-    public AuthorizationMsg(Address from, Address to, String login, String pass) {
+    public Authorization(Address from, Address to, String login, String pass) {
         super(from, to, login);
         this.pass = pass;
     }
@@ -18,7 +18,7 @@ public class AuthorizationMsg extends AccountServiceMsg {
     }
 
     @Override
-    public void execute(AccountServiceImpl accountService) {
+    public void execute(UserDataServiceImpl accountService) {
         UserProfile user = accountService.getUserByLogin(getLogin());
 
 

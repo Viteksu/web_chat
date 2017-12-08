@@ -4,26 +4,49 @@ package com.viteksu.kursach.web.backEnd.accounts;
 import com.viteksu.kursach.core.messageSystem.MessageSystem;
 import com.viteksu.kursach.core.messageSystem.addressService.Address;
 import com.viteksu.kursach.core.messageSystem.addressService.AddressService;
-import com.viteksu.kursach.web.backEnd.dataBase.DBMock;
 import com.viteksu.kursach.web.backEnd.dataBase.DBservice;
 import com.viteksu.kursach.web.backEnd.dataBase.DBserviceImpl;
 
-public class AccountServiceImpl implements AccountService {
-    //    private final DBservice dbService = new DBserviceImpl();
-    private final DBservice dbService = new DBMock();
+import java.util.List;
+
+public class UserDataServiceImpl implements UserDataService {
+    private final DBservice dbService = new DBserviceImpl();
+//    private final DBservice dbService = new DBMock();
 
     private final Address address = new Address();
 
     private final MessageSystem messageSystem;
     private final AddressService addressService;
 
-    public AccountServiceImpl(MessageSystem messageSystem) {
+    public UserDataServiceImpl(MessageSystem messageSystem) {
         this.messageSystem = messageSystem;
         addressService = AddressService.getInstance();
 
         messageSystem.addService(this);
         addressService.registerAccountServ(this);
 
+        new Thread(this).start();
+
+    }
+
+    @Override
+    public void addMessages(List<Message> messages) {
+        dbService.addMessages(messages);
+    }
+
+    @Override
+    public List<Message> getMessageById(long from, long to) {
+        return dbService.getMessageById(from, to);
+    }
+
+    @Override
+    public List<Message> getMessagesBySender(String sender) {
+        return dbService.getMessagesBySender(sender);
+    }
+
+    @Override
+    public List<Message> getMessagesByRecipient(String recipient) {
+        return dbService.getMessagesByRecipient(recipient);
     }
 
     @Override

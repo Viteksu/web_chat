@@ -10,16 +10,21 @@ import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PropertyChecker implements Runnable {
 
     private final ServletContext servletContext;
-    private List<String> resourses = new LinkedList<>();
+    private List<String> resourses = new CopyOnWriteArrayList<>();
+    private Property property;
 
     public PropertyChecker(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    public Property getProperty() {
+        return property;
     }
 
     public boolean isURI(String uri) {
@@ -59,18 +64,22 @@ public class PropertyChecker implements Runnable {
             JsonElement jsonElement = object.get("resourses");
 
 
-            Type listType = new TypeToken<List<String>>() {
+            Type listType = new TypeToken<CopyOnWriteArrayList>() {
             }.getType();
 
 
             resourses = new Gson().fromJson(jsonElement, listType);
+            int sleepTime = object.get("checking_time_out").getAsInt() * 1000;
+            int sizeMessagePool = object.get("size_message_pool").getAsInt();
+
+            property = new Property(resourses, sleepTime, sizeMessagePool);
 
             synchronized (this) {
                 this.notify();
             }
 
             try {
-                Thread.sleep(30_000);
+                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

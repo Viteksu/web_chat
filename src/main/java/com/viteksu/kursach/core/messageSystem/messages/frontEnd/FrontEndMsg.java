@@ -16,7 +16,6 @@ public abstract class FrontEndMsg extends Message {
 
     @Override
     public void execute(Abonent abonent) {
-        if (abonent instanceof FrontEndService)
             execute((FrontEndService) abonent);
     }
 

@@ -11,6 +11,10 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.service.ServiceRegistry;
 
+import java.util.LinkedList;
+import java.util.List;
+
+
 public class DBserviceImpl implements DBservice {
     private final SessionFactory factory = createFactory(getConfiguration());
 
@@ -54,6 +58,56 @@ public class DBserviceImpl implements DBservice {
         return (UserProfile) criteria.add(Restrictions.eq("login", login)).uniqueResult();
     }
 
+
+    @Override
+    public void addMessages(List<Message> messages) {
+        Session session = factory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+
+        for (Message m : messages) {
+            session.saveOrUpdate(m);
+        }
+        transaction.commit();
+        session.close();
+    }
+
+    @Override
+    public List<Message> getMessageById(long from, long to) {
+        Session session = factory.openSession();
+
+        List<Message> messages = new LinkedList<>();
+        if (from == to) {
+            messages.add((Message) session.get(Message.class, from));
+        } else {
+            for (long i = from; i < to; i++) {
+                messages.add((Message) session.get(Message.class, i));
+            }
+        }
+
+
+        session.close();
+        return messages;
+    }
+
+    @Override
+    public List<Message> getMessagesBySender(String sender) {
+        Session session = factory.openSession();
+        Criteria criteria = session.createCriteria(Message.class);
+        List<Message> messages = new LinkedList<>();
+        messages.addAll(criteria.add(Restrictions.eq("sender", sender)).list());
+        return messages;
+    }
+
+    @Override
+    public List<Message> getMessagesByRecipient(String recipient) {
+        Session session = factory.openSession();
+        Criteria criteria = session.createCriteria(Message.class);
+        List<Message> messages = new LinkedList<>();
+        messages.addAll(criteria.add(Restrictions.eq("recipient", recipient)).list());
+        return messages;
+    }
+
     private SessionFactory createFactory(Configuration configuration) {
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
         builder.applySettings(configuration.getProperties());
@@ -73,8 +127,7 @@ public class DBserviceImpl implements DBservice {
         configuration.setProperty("hibernate.connection.username", "root");
         configuration.setProperty("hibernate.connection.password", "7412");
         configuration.setProperty("hibernate.show_sql", "true");
-        configuration.setProperty("hibernate.hbm2ddl.auto", "create");
+        configuration.setProperty("hibernate.hbm2ddl.auto", "update");
         return configuration;
     }
-
 }

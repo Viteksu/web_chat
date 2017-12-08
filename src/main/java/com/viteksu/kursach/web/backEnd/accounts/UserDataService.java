@@ -3,7 +3,9 @@ package com.viteksu.kursach.web.backEnd.accounts;
 import com.viteksu.kursach.core.messageSystem.Abonent;
 import com.viteksu.kursach.core.messageSystem.MessageSystem;
 
-public interface AccountService extends Abonent, Runnable {
+import java.util.List;
+
+public interface UserDataService extends Abonent, Runnable {
     boolean addNewUser(UserProfile userProfile);
 
     UserProfile getUserById(long id);
@@ -11,5 +13,14 @@ public interface AccountService extends Abonent, Runnable {
     UserProfile getUserByLogin(String login);
 
     MessageSystem getMessageSystem();
+
+    void addMessages(List<Message> messages);
+
+    List<Message> getMessageById(long from, long to);
+
+
+    List<Message> getMessagesBySender(String sender);
+
+    List<Message> getMessagesByRecipient(String recipient);
 }
 

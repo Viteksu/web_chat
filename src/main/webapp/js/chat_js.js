@@ -69,7 +69,66 @@ class Message {
 
 		var $usersArea = document.getElementById("users");
 
-		 if (message.type == "ERR") {
+		console.log(message);
+
+
+		if (message.type == "HISTORY") {
+
+			//$textarea.value = $textarea.value + message.sender + ": " + message.message + "\n";
+
+			if (message.sender == name) {
+				user = message.recipient;
+			} else {
+				user = message.sender;
+			}
+
+			if (!chattingUsersIn.has(user) && (message.recipient != "ALL")) {
+				chattingUsersIn.add(user);
+
+				var parantElement = document.getElementById("tabs");
+				var element = document.createElement('input');
+
+				element.setAttribute("class", "tablink");
+				element.setAttribute("type", "button");
+				element.setAttribute("name", "inset");
+				element.setAttribute("value", user);
+				element.setAttribute("id", "button" + user);
+
+				var openChat = "openChat('" + user + "', this);";
+				element.setAttribute("onclick", openChat);
+
+				parantElement.appendChild(element);
+
+
+				parantElement = document.getElementById('chatbox');
+				var element = document.createElement('textarea');
+
+				element.setAttribute("class", "html-chat-history tabcontent");
+				element.setAttribute("cols", "80");
+				element.setAttribute("rows", "20");
+				element.setAttribute("id", user);
+				element.setAttribute("readonly", "readonly");
+				element.setAttribute("onkeydown", "SendComment(event)");
+				parantElement.appendChild(element);
+
+
+			}
+
+
+			var $textField = document.getElementById(user);
+
+
+
+			if (message.recipient == "ALL") {
+				$textarea.value = $textarea.value + message.sender + ": " + message.message + "\n";
+			} else {
+				$textField.value = $textField.value + message.sender + ": " + message.message + "\n";
+			}
+
+			return;
+		}
+
+		if (message.type == "ERR") {
 
 			 $textarea.value = $textarea.value + "ERROR \n";
 
@@ -90,7 +149,6 @@ class Message {
 			return;
 		}
 
-		console.log(message);
 
 		if (message.type == "UPDATE_DEL") {
 			onlineUsers.delete(message.message);

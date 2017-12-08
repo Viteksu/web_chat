@@ -7,7 +7,9 @@ import java.io.Serializable;
 @Entity
 @Table(name = "messages")
 public class Message implements Serializable {
-    private static final long serialVersionUID = -7611543623321789238L;
+    transient private static final long serialVersionUID = -7611543623321789238L;
+
+    transient public static final String TYPE_HISTORY = "HISTORY";
 
     @Id
     @Column(name = "id", nullable = false)
@@ -69,4 +71,35 @@ public class Message implements Serializable {
         this.type = type;
     }
 
+    public static Message setType(Message message, String type) {
+        Message result = new Message();
+        result.type = type;
+        result.message = message.message;
+        result.sender = message.sender;
+        result.recipient = message.recipient;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Message message = (Message) obj;
+
+        if (message.recipient.equals(recipient) && message.sender.equals(sender)
+                && message.type.equals(type) && message.message.equals(this.message)) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return type.hashCode() * message.hashCode() / sender.hashCode() - (recipient.hashCode()) - 4341;
+    }
+
+    @Override
+    public String toString() {
+        return recipient + " " + sender + " " + recipient + " " + message;
+    }
 }

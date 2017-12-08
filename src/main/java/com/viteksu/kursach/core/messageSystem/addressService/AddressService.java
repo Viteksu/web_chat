@@ -1,14 +1,13 @@
 package com.viteksu.kursach.core.messageSystem.addressService;
 
-import com.viteksu.kursach.core.messageSystem.Abonent;
 import com.viteksu.kursach.core.messageSystem.MessageSystem;
-import com.viteksu.kursach.web.backEnd.accounts.AccountService;
+import com.viteksu.kursach.web.backEnd.accounts.UserDataService;
 import com.viteksu.kursach.web.frontEnd.FrontEndService;
 
 public class AddressService {
     private static AddressService addressService = new AddressService();
 
-    private AccountService accountService;
+    private UserDataService userDataService;
     private FrontEndService frontEnd;
     private MessageSystem messageSystem;
 
@@ -19,16 +18,16 @@ public class AddressService {
         this.messageSystem = messageSystem;
     }
 
-    public void registerAccountServ(AccountService accountService) {
-        this.accountService = accountService;
+    public void registerAccountServ(UserDataService userDataService) {
+        this.userDataService = userDataService;
     }
 
     public void registerFrontEndServ(FrontEndService frontEnd) {
         this.frontEnd = frontEnd;
     }
 
-    public AccountService getAccountService() {
-        return accountService;
+    public UserDataService getUserDataService() {
+        return userDataService;
     }
 
     public FrontEndService getFrontEnd() {

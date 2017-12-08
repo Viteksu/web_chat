@@ -3,29 +3,27 @@ package com.viteksu.kursach.web.frontEnd;
 import com.viteksu.kursach.core.messageSystem.MessageSystem;
 import com.viteksu.kursach.core.messageSystem.addressService.Address;
 import com.viteksu.kursach.core.messageSystem.addressService.AddressService;
-import com.viteksu.kursach.core.messageSystem.messages.accountService.AuthorizationMsg;
-import com.viteksu.kursach.core.messageSystem.messages.accountService.RegistrationMsg;
+import com.viteksu.kursach.core.messageSystem.messages.userDataService.userProfile.Authorization;
+import com.viteksu.kursach.core.messageSystem.messages.userDataService.userProfile.Registration;
+import com.viteksu.kursach.web.backEnd.accounts.Message;
 import com.viteksu.kursach.web.backEnd.accounts.UserProfile;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FrontEndServiceImpl implements FrontEndService {
     private final AddressService addressService;
     private final MessageSystem messageSystem;
 
+
     private Set<String> registredUsers = ConcurrentHashMap.newKeySet();
     private Map<String, UserProfile> authenticatedUsers = new ConcurrentHashMap<>();
-
+    private Map<String, LinkedHashSet<Message>> userMassages = new ConcurrentHashMap<>();
 
     private final Address address = new Address();
 
     private final Object regLock = new Object();
     private final Object authLock = new Object();
-
     @Override
     public Address getAddress() {
         return address;
@@ -37,6 +35,9 @@ public class FrontEndServiceImpl implements FrontEndService {
 
         messageSystem.addService(this);
         addressService.registerFrontEndServ(this);
+
+
+        new Thread(this).start();
     }
 
 
@@ -59,12 +60,40 @@ public class FrontEndServiceImpl implements FrontEndService {
         }
     }
 
+    // блокировку добавить
+    @Override
+    public List<Message> getMessages(String login) {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        List<Message> messages = new LinkedList<>(userMassages.get(login));
+        userMassages.get(login).clear();
+
+
+        return messages;
+    }
+
+    @Override
+    public void setUserMessages(String login, List<Message> messages) {
+
+        LinkedHashSet<Message> mess = userMassages.get(login);
+
+        if (mess == null) {
+            this.userMassages.put(login, new LinkedHashSet<>(messages));
+        } else {
+            mess.addAll(messages);
+        }
+
+    }
+
     @Override
     public void authenticate(String name, String password) {
         try {
-            messageSystem.sendMessage(new AuthorizationMsg(this.getAddress(), addressService.getAccountService().getAddress(), name, password));
+            messageSystem.sendMessage(new Authorization(this.getAddress(), addressService.getUserDataService().getAddress(), name, password));
         } catch (Exception e) {
-            System.err.println("Auth");
+            e.printStackTrace();
         }
     }
 
@@ -90,7 +119,7 @@ public class FrontEndServiceImpl implements FrontEndService {
 
     @Override
     public void register(String login, String pass, String id) {
-        messageSystem.sendMessage(new RegistrationMsg(this.getAddress(), addressService.getAccountService().getAddress(),
+        messageSystem.sendMessage(new Registration(this.getAddress(), addressService.getUserDataService().getAddress(),
                 login, pass, id));
     }
 

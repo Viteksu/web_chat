@@ -1,11 +1,16 @@
-package com.viteksu.kursach.web.frontEnd.chat.websocket;
+package com.viteksu.kursach.web.frontEnd.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.viteksu.kursach.core.Loader;
+import com.viteksu.kursach.core.messageSystem.addressService.AddressService;
+import com.viteksu.kursach.core.messageSystem.messages.userDataService.userMessage.AddingMessageMsg;
+import com.viteksu.kursach.core.messageSystem.messages.userDataService.userMessage.GettingMessageMsg;
 import com.viteksu.kursach.web.backEnd.accounts.Message;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +23,6 @@ public class WebSocketHandler {
 
     private WebSocketHandler() {
     }
-
-
     public void removeUser(WebSocket webSocket) {
         String type = "UPDATE_DEL";
         String sender = "SERVER";
@@ -29,11 +32,8 @@ public class WebSocketHandler {
         users.remove(webSocket);
 
         Message message = new Message(type, sender, recipient, login);
-        Gson gson = new Gson();
 
-        String answerJson = gson.toJson(message);
-
-        sendToClient(answerJson, recipient, sender);
+        sendToClient(message);
 
 
     }
@@ -48,64 +48,80 @@ public class WebSocketHandler {
         for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
             String login = entry.getValue();
 
-
             Message message = new Message(type, sender, recipient, login);
-            Gson gson = new Gson();
 
-
-            String answerJson = gson.toJson(message);
-
-            sendToClient(answerJson, recipient, sender);
+            sendToClient(message);
         }
 
-
+        sendMessageHistory(webSocket, name);
     }
 
-    private void sendToClient(String jsonMess, String recipient, String sender) {
-        if (recipient.equals("ALL") || recipient.equals("ERR")) {
+
+    private void sendMessageHistory(WebSocket webSocket, String name) {
+        LinkedHashSet<Message> messages = new LinkedHashSet<>();
+        Gson gson = new Gson();
+
+        AddressService addressService = AddressService.getInstance();
+        addressService.getMessageSystem().sendMessage(new GettingMessageMsg(addressService.getFrontEnd().getAddress()
+                , addressService.getUserDataService().getAddress(), name, GettingMessageMsg.SENDER));
+        messages.addAll(addressService.getFrontEnd().getMessages(name));
+
+        addressService.getMessageSystem().sendMessage(new GettingMessageMsg(addressService.getFrontEnd().getAddress()
+                , addressService.getUserDataService().getAddress(), name, GettingMessageMsg.RECIPIENT));
+        messages.addAll(addressService.getFrontEnd().getMessages(name));
+
+        for (Message m : messages) {
+            if (m != null) {
+                try {
+                    webSocket.sendBack(gson.toJson(m));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void sendToClient(Message message) {
+        Gson gson = new Gson();
+        String answerJson = gson.toJson(message);
+
+        if (message.getRecipient().equals("ALL") || message.getType().equals("ERR")) {
             for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
                 try {
-                    entry.getKey().sendBack(jsonMess);
+                    entry.getKey().sendBack(answerJson);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         } else {
             for (Map.Entry<WebSocket, String> entry : users.entrySet()) {
-                if (entry.getValue().equals(recipient) || entry.getValue().equals(sender)) {
-
+                if (entry.getValue().equals(message.getRecipient()) || entry.getValue().equals(message.getSender())) {
                     try {
-                        entry.getKey().sendBack(jsonMess);
+                        entry.getKey().sendBack(answerJson);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }
-
     }
 
     private void addMessage(Message message) {
         if (message.getType().equals("MESSAGE")) {
             messages.add(message);
 
-            if (messages.size() > 1) {
+            if (messages.size() > Loader.getInstance().getPropertyChecker(null).getProperty().getSizeMessagePool()) {
                 List<Message> newListMess = new LinkedList<>();
                 List<Message> lastMess = new LinkedList<>(messages);
                 messages = newListMess;
 
+                AddressService addressService = AddressService.getInstance();
 
-                for (Message m : lastMess) {
-                    System.err.println(m.getMessage() + " -----");
-                }
-                // работать с lastMess!!
-
-
+                addressService.getMessageSystem().sendMessage(new AddingMessageMsg(addressService.getFrontEnd().getAddress()
+                        , addressService.getUserDataService().getAddress(), lastMess));
                 // отправить в БД
             }
         }
-
-
     }
 
     public void send(String jsonMessage) {
@@ -131,12 +147,8 @@ public class WebSocketHandler {
         }
 
         Message mess = new Message(type, sender, recipient, message);
-
         addMessage(mess);
-
-        Gson gson = new Gson();
-
-        sendToClient(gson.toJson(mess), recipient, sender);
+        sendToClient(mess);
     }
 
     public static WebSocketHandler getInsance() {

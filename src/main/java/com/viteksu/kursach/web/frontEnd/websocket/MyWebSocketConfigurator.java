@@ -1,4 +1,4 @@
-package com.viteksu.kursach.web.frontEnd.chat.websocket;
+package com.viteksu.kursach.web.frontEnd.websocket;
 
 import javax.websocket.server.ServerEndpointConfig;
 

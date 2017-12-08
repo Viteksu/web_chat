@@ -1,23 +1,23 @@
-package com.viteksu.kursach.core.messageSystem.messages.accountService;
+package com.viteksu.kursach.core.messageSystem.messages.userDataService.userProfile;
 
 
 import com.viteksu.kursach.core.messageSystem.addressService.Address;
 import com.viteksu.kursach.core.messageSystem.messages.frontEnd.RegistredMsg;
-import com.viteksu.kursach.web.backEnd.accounts.AccountServiceImpl;
+import com.viteksu.kursach.web.backEnd.accounts.UserDataServiceImpl;
 import com.viteksu.kursach.web.backEnd.accounts.UserProfile;
 
-public class RegistrationMsg extends AccountServiceMsg {
+public class Registration extends UserProfileMsg {
     private String userId;
     private String pass;
 
-    public RegistrationMsg(Address from, Address to, String login, String pass, String id) {
+    public Registration(Address from, Address to, String login, String pass, String id) {
         super(from, to, login);
         this.userId = id;
         this.pass = pass;
     }
 
     @Override
-    public void execute(AccountServiceImpl accountService) {
+    public void execute(UserDataServiceImpl accountService) {
         UserProfile userProfile = new UserProfile(getLogin(), pass);
 
         boolean result = accountService.addNewUser(userProfile);

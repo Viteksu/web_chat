@@ -4,27 +4,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Property {
-    private List<String> resourses = new LinkedList<>();
-    private int maxUsers = 10;
+    private final List<String> resourses;
+    private final int sleepTime;
+    private final int sizeMessagePool;
 
-    public void addResourse(String res) {
-        resourses.add(res);
+    public Property(List<String> resourses, int sleepTime, int sizeMessagePool) {
+        this.resourses = resourses;
+        this.sleepTime = sleepTime;
+        this.sizeMessagePool = sizeMessagePool;
     }
 
     public List<String> getResourses() {
         return resourses;
     }
 
-    public void setMaxUsers(int maxUsers) {
-        this.maxUsers = maxUsers;
+    public int getSleepTime() {
+        return sleepTime;
     }
 
-    public void setResourses(List<String> strings) {
-        this.resourses = strings;
+    public int getSizeMessagePool() {
+        return sizeMessagePool;
     }
-
-    public int getMaxUsers() {
-        return maxUsers;
-    }
-
 }

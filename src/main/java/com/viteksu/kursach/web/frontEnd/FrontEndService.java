@@ -1,7 +1,10 @@
 package com.viteksu.kursach.web.frontEnd;
 
 import com.viteksu.kursach.core.messageSystem.Abonent;
+import com.viteksu.kursach.web.backEnd.accounts.Message;
 import com.viteksu.kursach.web.backEnd.accounts.UserProfile;
+
+import java.util.List;
 
 public interface FrontEndService extends Abonent, Runnable {
     void register(String name, String password, String id);
@@ -15,4 +18,8 @@ public interface FrontEndService extends Abonent, Runnable {
     UserProfile isAuthenticated(String login);
 
     void setAuthenticated(UserProfile userProfile);
+
+    void setUserMessages(String login, List<Message> messages);
+
+    List<Message> getMessages(String login);
 }
