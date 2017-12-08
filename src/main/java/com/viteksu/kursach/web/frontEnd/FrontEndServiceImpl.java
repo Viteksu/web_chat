@@ -20,12 +20,10 @@ public class FrontEndServiceImpl implements FrontEndService {
     private Map<String, UserProfile> authenticatedUsers = new ConcurrentHashMap<>();
     private Map<String, LinkedHashSet<Message>> userMassages = new ConcurrentHashMap<>();
 
-
     private final Address address = new Address();
 
     private final Object regLock = new Object();
     private final Object authLock = new Object();
-
     @Override
     public Address getAddress() {
         return address;

@@ -22,7 +22,7 @@ public class URLFilter extends HttpFilter {
         if (propertyChecker.isURI(req.getRequestURI())) {
             chain.doFilter(req, res);
         } else {
-            res.getWriter().write("Incorrect URL!\n" + req.getRequestURI() + "\n" + req.getContextPath());
+            res.sendRedirect("/OOP/error-page.html");
         }
     }
 }
