@@ -1,8 +1,9 @@
-package com.viteksu.kursach.web.frontEnd.chat.websocket;
+package com.viteksu.kursach.web.frontEnd.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.viteksu.kursach.core.Loader;
 import com.viteksu.kursach.core.messageSystem.addressService.AddressService;
 import com.viteksu.kursach.core.messageSystem.messages.userDataService.userMessage.AddingMessageMsg;
 import com.viteksu.kursach.core.messageSystem.messages.userDataService.userMessage.GettingMessageMsg;
@@ -78,7 +79,6 @@ public class WebSocketHandler {
                 }
             }
         }
-
     }
 
     private void sendToClient(Message message) {
@@ -110,7 +110,7 @@ public class WebSocketHandler {
         if (message.getType().equals("MESSAGE")) {
             messages.add(message);
 
-            if (messages.size() > 1) {
+            if (messages.size() > Loader.getInstance().getPropertyChecker(null).getProperty().getSizeMessagePool()) {
                 List<Message> newListMess = new LinkedList<>();
                 List<Message> lastMess = new LinkedList<>(messages);
                 messages = newListMess;
@@ -119,14 +119,9 @@ public class WebSocketHandler {
 
                 addressService.getMessageSystem().sendMessage(new AddingMessageMsg(addressService.getFrontEnd().getAddress()
                         , addressService.getUserDataService().getAddress(), lastMess));
-                // работать с lastMess!!
-
-
                 // отправить в БД
             }
         }
-
-
     }
 
     public void send(String jsonMessage) {

@@ -1,4 +1,4 @@
-package com.viteksu.kursach.web.frontEnd.chat.websocket;
+package com.viteksu.kursach.web.frontEnd.websocket;
 
 import com.viteksu.kursach.web.backEnd.accounts.Message;
 
@@ -31,7 +31,6 @@ public class WebSocket {
     @OnClose
     public void onClose() {
         webSocketHandler.removeUser(this);
-
     }
 
     @OnMessage

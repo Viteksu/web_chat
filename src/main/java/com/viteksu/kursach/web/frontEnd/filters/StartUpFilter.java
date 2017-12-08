@@ -12,7 +12,7 @@ import java.io.IOException;
 public class StartUpFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        Loader.getInstance();
+        Loader.getInstance().getPropertyChecker(getServletContext());
         chain.doFilter(req, res);
 
     }

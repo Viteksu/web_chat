@@ -49,14 +49,12 @@ public class Loader {
     }
 
     /*
-         * Initialization is here
-         * */
+     * Initialization is here
+     * */
     private void startUp() {
         MessageSystem messageSystem = new MessageSystem();
         UserDataService userDataService = new UserDataServiceImpl(messageSystem);
         FrontEndService frontEndService = new FrontEndServiceImpl(messageSystem);
 
-        new Thread(userDataService).start();
-        new Thread(frontEndService).start();
     }
 }

@@ -25,6 +25,8 @@ public class UserDataServiceImpl implements UserDataService {
         messageSystem.addService(this);
         addressService.registerAccountServ(this);
 
+        new Thread(this).start();
+
     }
 
     @Override

@@ -35,6 +35,9 @@ public class FrontEndServiceImpl implements FrontEndService {
 
         messageSystem.addService(this);
         addressService.registerFrontEndServ(this);
+
+
+        new Thread(this).start();
     }
 
 

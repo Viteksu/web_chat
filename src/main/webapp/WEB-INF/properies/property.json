@@ -10,5 +10,6 @@
     "/OOP/styles/style.css",
     "/OOP/error-page.html"
   ],
-  "maxUsers": 10
+  "checking_time_out": 30,
+  "size_message_pool": 1
 }
