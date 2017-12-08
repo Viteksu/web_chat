@@ -40,7 +40,6 @@ public class PropertyChecker implements Runnable {
     @Override
     public void run() {
         while (true) {
-            System.err.println("CHECK ----");
             InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/properies/property.json");
 
             StringBuilder json = new StringBuilder();
