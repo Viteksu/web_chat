@@ -58,7 +58,7 @@ public class WebSocketHandler {
 
 
     private void sendMessageHistory(WebSocket webSocket, String name) {
-        LinkedHashSet<Message> messages = new LinkedHashSet<>();
+        LinkedList<Message> messages = new LinkedList<>();
         Gson gson = new Gson();
 
         AddressService addressService = AddressService.getInstance();
@@ -69,6 +69,12 @@ public class WebSocketHandler {
         addressService.getMessageSystem().sendMessage(new GettingMessageMsg(addressService.getFrontEnd().getAddress()
                 , addressService.getUserDataService().getAddress(), name, GettingMessageMsg.RECIPIENT));
         messages.addAll(addressService.getFrontEnd().getMessages(name));
+
+        for (Message m : this.messages) {
+            if (m.getSender().equals(name) || m.getRecipient().equals(name)) {
+                messages.add(m);
+            }
+        }
 
         for (Message m : messages) {
             if (m != null) {
